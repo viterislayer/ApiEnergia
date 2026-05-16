@@ -1,0 +1,1535 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Energía Eléctrica</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #f2f2f7;
+            --surface: #ffffff;
+            --surface2: #f2f2f7;
+            --border: rgba(60,60,67,.12);
+            --blue: #007aff;
+            --blue-soft: rgba(0,122,255,.1);
+            --green: #34c759;
+            --green-soft: rgba(52,199,89,.1);
+            --orange: #ff9500;
+            --orange-soft: rgba(255,149,0,.1);
+            --red: #ff3b30;
+            --red-soft: rgba(255,59,48,.1);
+            --purple: #af52de;
+            --text: #1c1c1e;
+            --text2: #3a3a3c;
+            --text3: #6c6c70;
+            --text4: #aeaeb2;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+            --shadow: 0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.06);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.08);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            background: rgba(255,255,255,.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ff9500, #ffcc00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -.3px;
+        }
+
+        .header-sub {
+            font-size: .75rem;
+            color: var(--text3);
+            font-family: 'DM Mono', monospace;
+            margin-top: 1px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 0 2px rgba(52,199,89,.25);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%,100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .5
+            }
+        }
+
+        nav {
+            display: flex;
+            gap: .4rem;
+            padding: 1rem 1.5rem .5rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+            nav::-webkit-scrollbar {
+                display: none;
+            }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            background: var(--surface);
+            border: none;
+            color: var(--text3);
+            padding: .5rem 1.1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all .2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+            .nav-btn.active {
+                background: var(--blue);
+                color: #fff;
+                box-shadow: 0 4px 12px rgba(0,122,255,.3);
+            }
+
+            .nav-btn:not(.active):hover {
+                background: var(--blue-soft);
+                color: var(--blue);
+            }
+
+        main {
+            padding: 1rem 1.5rem 2rem;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .section {
+            display: none;
+            animation: fadeUp .3s ease;
+        }
+
+            .section.active {
+                display: block;
+            }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: .75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1rem 1.1rem;
+            box-shadow: var(--shadow-sm);
+            transition: transform .15s;
+        }
+
+            .stat-card:active {
+                transform: scale(.97);
+            }
+
+        .stat-icon {
+            font-size: 1.4rem;
+            margin-bottom: .4rem;
+        }
+
+        .stat-val {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -.5px;
+        }
+
+        .stat-lbl {
+            font-size: .75rem;
+            color: var(--text3);
+            margin-top: 2px;
+        }
+
+        .subtabs {
+            display: flex;
+            gap: .4rem;
+            margin-bottom: 1.25rem;
+            background: var(--surface2);
+            padding: 3px;
+            border-radius: 10px;
+            width: fit-content;
+        }
+
+        .subtab {
+            background: transparent;
+            border: none;
+            color: var(--text3);
+            padding: .4rem .9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .85rem;
+            font-weight: 500;
+            transition: all .2s;
+        }
+
+            .subtab.active {
+                background: var(--surface);
+                color: var(--text);
+                box-shadow: var(--shadow-sm);
+            }
+
+        .subview {
+            display: none;
+        }
+
+            .subview.active {
+                display: block;
+                animation: fadeUp .25s ease;
+            }
+
+        .sec-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -.4px;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .titular-list {
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+        }
+
+        .titular-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow-sm);
+            transition: all .2s;
+            cursor: default;
+        }
+
+            .titular-card:hover {
+                box-shadow: var(--shadow);
+                transform: translateY(-1px);
+            }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .titular-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .titular-name {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -.2px;
+        }
+
+        .titular-sub {
+            font-size: .8rem;
+            color: var(--text3);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            padding: .2rem .65rem;
+            border-radius: 20px;
+            font-size: .75rem;
+            font-weight: 600;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .pill-blue {
+            background: var(--blue-soft);
+            color: var(--blue);
+        }
+
+        .pill-green {
+            background: var(--green-soft);
+            color: var(--green);
+        }
+
+        .pill-orange {
+            background: var(--orange-soft);
+            color: var(--orange);
+        }
+
+        .pill-purple {
+            background: rgba(175,82,222,.1);
+            color: var(--purple);
+        }
+
+        .form-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            max-width: 480px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: .8rem;
+            font-weight: 500;
+            color: var(--text3);
+            margin-bottom: .4rem;
+            letter-spacing: .2px;
+        }
+
+        input, select {
+            width: 100%;
+            background: var(--surface2);
+            border: 1.5px solid transparent;
+            color: var(--text);
+            padding: .65rem 1rem;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .95rem;
+            transition: all .2s;
+            outline: none;
+        }
+
+            input:focus, select:focus {
+                border-color: var(--blue);
+                background: #fff;
+                box-shadow: 0 0 0 4px rgba(0,122,255,.1);
+            }
+
+            select option {
+                background: #fff;
+            }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .7rem 1.4rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .95rem;
+            font-weight: 600;
+            transition: all .15s;
+            letter-spacing: -.1px;
+        }
+
+            .btn:active {
+                transform: scale(.97);
+            }
+
+        .btn-blue {
+            background: var(--blue);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,122,255,.3);
+        }
+
+        .btn-green {
+            background: var(--green);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(52,199,89,.3);
+        }
+
+        .btn-sm {
+            padding: .4rem .85rem;
+            font-size: .82rem;
+            border-radius: 8px;
+        }
+
+        .btn-ghost {
+            background: var(--surface2);
+            color: var(--text2);
+            box-shadow: none;
+        }
+
+            .btn-ghost:hover {
+                background: var(--border);
+            }
+
+        .alert {
+            padding: .75rem 1rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1rem;
+            font-size: .9rem;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: .5rem;
+        }
+
+            .alert.show {
+                display: flex;
+                animation: fadeUp .2s ease;
+            }
+
+        .alert-success {
+            background: var(--green-soft);
+            color: #1a6b32;
+        }
+
+        .alert-error {
+            background: var(--red-soft);
+            color: #b91c1c;
+        }
+
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem;
+            color: var(--text4);
+            font-size: .9rem;
+            gap: .75rem;
+        }
+
+            .loading.show {
+                display: flex;
+            }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2.5px solid var(--border);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .tbl-wrap {
+            background: var(--surface);
+            border-radius: var(--radius);
+            overflow-x: auto;
+            box-shadow: var(--shadow-sm);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 520px;
+        }
+
+        thead tr {
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            padding: .7rem 1rem;
+            text-align: left;
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--text3);
+            letter-spacing: .5px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: .75rem 1rem;
+            font-size: .9rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: background .15s;
+        }
+
+            tbody tr:hover td {
+                background: rgba(0,122,255,.03);
+            }
+
+        .monto-cell {
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .saldo-box {
+            background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            color: #fff;
+            display: none;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 24px rgba(0,122,255,.3);
+        }
+
+            .saldo-box.show {
+                display: block;
+                animation: fadeUp .3s ease;
+            }
+
+        .saldo-titular {
+            font-size: .85rem;
+            opacity: .8;
+            margin-bottom: .25rem;
+        }
+
+        .saldo-nombre {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .saldo-num {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .saldo-sub {
+            font-size: .85rem;
+            opacity: .75;
+            margin-top: .35rem;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text4);
+            font-size: .95rem;
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: .75rem;
+        }
+
+        .action-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: .5rem;
+        }
+
+        .c0 {
+            background: linear-gradient(135deg,#007aff,#5856d6)
+        }
+
+        .c1 {
+            background: linear-gradient(135deg,#34c759,#30d158)
+        }
+
+        .c2 {
+            background: linear-gradient(135deg,#ff9500,#ff6b00)
+        }
+
+        .c3 {
+            background: linear-gradient(135deg,#ff3b30,#ff6961)
+        }
+
+        .c4 {
+            background: linear-gradient(135deg,#af52de,#bf5af2)
+        }
+
+        .c5 {
+            background: linear-gradient(135deg,#00c7be,#30b0c7)
+        }
+
+        /* ── FACTURA ── */
+        .factura {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            max-width: 480px;
+            overflow: hidden;
+            display: none;
+            margin-top: 1rem;
+        }
+
+            .factura.show {
+                display: block;
+                animation: fadeUp .3s ease;
+            }
+
+        .factura-header {
+            background: linear-gradient(135deg, #1c1c1e, #3a3a3c);
+            color: #fff;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+            .factura-header .fh-title {
+                font-size: .7rem;
+                opacity: .6;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: .2rem;
+            }
+
+            .factura-header .fh-num {
+                font-family: 'DM Mono', monospace;
+                font-size: 1.1rem;
+                font-weight: 500;
+            }
+
+            .factura-header .fh-logo {
+                font-size: 1.8rem;
+            }
+
+        .factura-body {
+            padding: 1.5rem;
+        }
+
+        .factura-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: .6rem 0;
+            border-bottom: 1px dashed rgba(60,60,67,.1);
+        }
+
+            .factura-row:last-child {
+                border-bottom: none;
+            }
+
+            .factura-row .fr-label {
+                font-size: .8rem;
+                color: var(--text3);
+            }
+
+            .factura-row .fr-val {
+                font-size: .9rem;
+                font-weight: 600;
+                color: var(--text);
+                font-family: 'DM Mono', monospace;
+            }
+
+        .factura-total {
+            background: var(--blue-soft);
+            border-radius: var(--radius-sm);
+            padding: 1rem 1.5rem;
+            margin: 1rem 1.5rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .factura-total .ft-label {
+                font-size: .85rem;
+                color: var(--blue);
+                font-weight: 600;
+            }
+
+            .factura-total .ft-monto {
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: var(--blue);
+                letter-spacing: -1px;
+            }
+
+        .factura-footer {
+            background: var(--surface2);
+            padding: .85rem 1.5rem;
+            text-align: center;
+            font-size: .75rem;
+            color: var(--text4);
+            font-family: 'DM Mono', monospace;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem 1rem;
+            color: var(--text4);
+            font-size: .78rem;
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* ── STEPS ── */
+        .reg-step {
+            margin-bottom: .5rem;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            margin-bottom: .5rem;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            color: var(--text4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all .3s;
+        }
+
+            .step-num.done {
+                background: var(--blue);
+                border-color: var(--blue);
+                color: #fff;
+                box-shadow: 0 2px 8px rgba(0,122,255,.35);
+            }
+
+            .step-num.active {
+                background: var(--blue-soft);
+                border-color: var(--blue);
+                color: var(--blue);
+            }
+
+        .step-title {
+            font-size: .9rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .step-sub {
+            font-size: .75rem;
+            color: var(--text3);
+        }
+
+        .step-body {
+            padding-left: 2.5rem;
+            margin-bottom: .75rem;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: .85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text4);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            transition: color .2s;
+        }
+
+        .icon-input {
+            padding-left: 2.5rem !important;
+        }
+
+        .input-wrap:focus-within .input-icon {
+            color: var(--blue);
+        }
+
+        .field-hint {
+            font-size: .75rem;
+            margin-top: .3rem;
+            padding-left: .2rem;
+            color: var(--text4);
+            min-height: 1rem;
+            transition: color .2s;
+        }
+
+            .field-hint.ok {
+                color: var(--green);
+            }
+
+            .field-hint.err {
+                color: var(--red);
+            }
+
+        .btn-register {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .6rem;
+            width: 100%;
+            padding: .85rem 1.5rem;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -.1px;
+            cursor: pointer;
+            margin-top: 1rem;
+            box-shadow: 0 4px 14px rgba(0,122,255,.35);
+            transition: all .2s;
+        }
+
+            .btn-register:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 20px rgba(0,122,255,.45);
+            }
+
+            .btn-register:active {
+                transform: scale(.98);
+            }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <div class="header-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </div>
+            <div>
+                <div class="header-title">Energía Eléctrica</div>
+                <div class="header-sub">luz.azurewebsites.net</div>
+            </div>
+        </div>
+        <div class="status-dot" title="API activa"></div>
+    </header>
+
+    <nav>
+        <button class="nav-btn active" onclick="showSection('titulares',this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+            Titulares
+        </button>
+        <button class="nav-btn" onclick="showSection('recibos',this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>
+            Recibos
+        </button>
+        <button class="nav-btn" onclick="showSection('pagos',this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>
+            Pagos
+        </button>
+    </nav>
+
+    <main>
+
+        <!-- ════ TITULARES ════ -->
+        <section id="titulares" class="section active">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg></div>
+                    <div class="stat-val" id="stat-titulares">—</div>
+                    <div class="stat-lbl">Titulares</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff9500" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg></div>
+                    <div class="stat-val" id="stat-recibos">—</div>
+                    <div class="stat-lbl">Recibos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg></div>
+                    <div class="stat-val" id="stat-pagos">—</div>
+                    <div class="stat-lbl">Pagos</div>
+                </div>
+            </div>
+
+            <div class="subtabs">
+                <button class="subtab active" onclick="showSub('titulares','ver',this)">Ver todos</button>
+                <button class="subtab" onclick="showSub('titulares','registrar',this)">+ Registrar</button>
+            </div>
+
+            <div id="titulares-ver" class="subview active">
+                <div class="action-row">
+                    <div class="sec-title">Titulares registrados</div>
+                    <button class="btn btn-ghost btn-sm" onclick="cargarTitulares()">🔄 Actualizar</button>
+                </div>
+                <div id="titulares-alert" class="alert"></div>
+                <div id="titulares-loading" class="loading"><div class="spinner"></div>Cargando titulares…</div>
+                <div id="titulares-list" class="titular-list"></div>
+            </div>
+
+            <div id="titulares-registrar" class="subview">
+                <div style="max-width:520px">
+                    <div class="sec-title" style="margin-bottom:1.25rem">Nuevo titular de servicio</div>
+                    <div id="reg-titular-alert" class="alert"></div>
+                    <div class="reg-step">
+                        <div class="step-header">
+                            <div class="step-num done" id="snum1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg></div>
+                            <div><div class="step-title">Número de contador</div><div class="step-sub">Identificador único del servicio</div></div>
+                        </div>
+                        <div class="step-body">
+                            <div class="input-wrap">
+                                <div class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg></div>
+                                <input id="t-contador" type="text" placeholder="Ej: CTR-001" oninput="livePreview()" class="icon-input" />
+                            </div>
+                            <div class="field-hint" id="hint-contador"></div>
+                        </div>
+                    </div>
+                    <div class="reg-step">
+                        <div class="step-header">
+                            <div class="step-num" id="snum2">2</div>
+                            <div><div class="step-title">Nombre del responsable</div><div class="step-sub">Titular legal del servicio</div></div>
+                        </div>
+                        <div class="step-body">
+                            <div class="input-wrap">
+                                <div class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg></div>
+                                <input id="t-nombre" type="text" placeholder="Nombre completo" oninput="livePreview()" class="icon-input" />
+                            </div>
+                            <div class="field-hint" id="hint-nombre"></div>
+                        </div>
+                    </div>
+                    <div class="reg-step">
+                        <div class="step-header">
+                            <div class="step-num" id="snum3">3</div>
+                            <div><div class="step-title">Dirección del inmueble</div><div class="step-sub">Ubicación del servicio eléctrico</div></div>
+                        </div>
+                        <div class="step-body">
+                            <div class="input-wrap">
+                                <div class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg></div>
+                                <input id="t-direccion" type="text" placeholder="Zona, calle, número…" oninput="livePreview()" class="icon-input" />
+                            </div>
+                            <div class="field-hint" id="hint-direccion"></div>
+                        </div>
+                    </div>
+                    <div class="reg-step">
+                        <div class="step-header">
+                            <div class="step-num" id="snum4">4</div>
+                            <div><div class="step-title">Saldo pendiente del servicio</div><div class="step-sub">Deuda inicial — dejar vacío si no aplica</div></div>
+                        </div>
+                        <div class="step-body">
+                            <div class="input-wrap">
+                                <div class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg></div>
+                                <input id="t-saldo" type="number" step="0.01" min="0" placeholder="0.00  (opcional)" class="icon-input" style="font-family:'DM Mono',monospace" />
+                            </div>
+                            <div class="field-hint" id="hint-saldo" style="color:var(--text4)">Opcional — ingrese el monto si el titular ya tiene deuda previa</div>
+                        </div>
+                    </div>
+                    <!-- CAMBIO: quitado el guion del path del ícono de persona (line x1="19" y1="8" → path correcto sin guion) -->
+                    <button class="btn-register" id="btn-registrar" onclick="registrarTitular()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" y1="8" x2="19" y2="14" /><line x1="22" y1="11" x2="16" y2="11" /></svg>
+                        Registrar titular
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════ RECIBOS ════ -->
+        <section id="recibos" class="section">
+            <div class="subtabs">
+                <button class="subtab active" onclick="showSub('recibos','ver',this)">Ver todos</button>
+                <button class="subtab" onclick="showSub('recibos','saldo',this)">Consultar saldo</button>
+                <button class="subtab" onclick="showSub('recibos','registrar',this)">+ Emitir</button>
+            </div>
+
+            <div id="recibos-ver" class="subview active">
+                <div class="action-row">
+                    <div class="sec-title">Recibos emitidos</div>
+                    <button class="btn btn-ghost btn-sm" onclick="cargarRecibos()">🔄 Actualizar</button>
+                </div>
+                <div id="recibos-alert" class="alert"></div>
+                <div id="recibos-loading" class="loading"><div class="spinner"></div>Cargando recibos…</div>
+                <div class="tbl-wrap">
+                    <table>
+                        <thead><tr><th>#</th><th>Responsable</th><th>Contador</th><th>Saldo pendiente</th><th>Fecha emisión</th></tr></thead>
+                        <tbody id="recibos-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SALDO -->
+            <div id="recibos-saldo" class="subview">
+                <div class="sec-title">Consultar saldo por contador</div>
+                <div id="saldo-alert" class="alert"></div>
+                <div class="form-card" style="margin-bottom:1rem">
+                    <div class="form-group">
+                        <label>NÚMERO DE CONTADOR</label>
+                        <input id="saldo-contador" type="text" placeholder="Ej: CTR-001" />
+                    </div>
+                    <button class="btn btn-blue" onclick="consultarSaldo()">🔍 Consultar saldo</button>
+                </div>
+                <!-- FACTURA SALDO -->
+                <div id="factura-saldo" class="factura">
+                    <div class="factura-header">
+                        <div>
+                            <div class="fh-title">Estado de cuenta</div>
+                            <div class="fh-num" id="fac-contador"></div>
+                        </div>
+                        <div class="fh-logo">⚡</div>
+                    </div>
+                    <div class="factura-body">
+                        <div class="factura-row">
+                            <span class="fr-label">Titular</span>
+                            <span class="fr-val" id="fac-nombre"></span>
+                        </div>
+                        <div class="factura-row">
+                            <span class="fr-label">Número de contador</span>
+                            <span class="fr-val" id="fac-num"></span>
+                        </div>
+                        <div class="factura-row">
+                            <span class="fr-label">Recibos pendientes</span>
+                            <span class="fr-val" id="fac-cant"></span>
+                        </div>
+                        <div class="factura-row">
+                            <span class="fr-label">Fecha de consulta</span>
+                            <span class="fr-val" id="fac-fecha"></span>
+                        </div>
+                        <div class="factura-row">
+                            <span class="fr-label">Estado</span>
+                            <span class="fr-val" id="fac-estado"></span>
+                        </div>
+                    </div>
+                    <div class="factura-total" id="fac-total-box">
+                        <span class="ft-label" id="fac-total-label">SALDO TOTAL PENDIENTE</span>
+                        <span class="ft-monto" id="fac-total"></span>
+                    </div>
+                    <div class="factura-footer">Energía Eléctrica · luz.azurewebsites.net</div>
+                </div>
+            </div>
+
+            <!-- EMITIR con código de autorización -->
+            <div id="recibos-registrar" class="subview">
+                <div class="sec-title">Verificar pago por autorización</div>
+                <div id="reg-recibo-alert" class="alert"></div>
+                <div class="form-card">
+                    <div class="form-group">
+                        <label>NÚMERO DE CONTADOR</label>
+                        <input id="r-contador" type="text" placeholder="Ej: CTR-001" />
+                    </div>
+                    <div class="form-group">
+                        <label>CÓDIGO DE AUTORIZACIÓN</label>
+                        <input id="r-codigo" type="text" placeholder="Ej: D0EGNYS731" style="font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase" />
+                    </div>
+                    <button class="btn btn-blue" onclick="verificarPago()">✅ Verificar pago</button>
+                </div>
+                <!-- FACTURA pago verificado -->
+                <div id="factura-emitida" class="factura" style="border:1.5px solid var(--green-soft);box-shadow:var(--shadow);">
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--border);">
+                        <div style="display:flex;align-items:center;gap:.6rem">
+                            <div style="width:36px;height:36px;border-radius:10px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">✅</div>
+                            <div>
+                                <div style="font-size:.7rem;font-weight:600;color:var(--green);letter-spacing:.5px;text-transform:uppercase">Pago verificado</div>
+                                <div id="fe-num" style="font-family:'DM Mono',monospace;font-size:.95rem;font-weight:600;color:var(--text)"></div>
+                            </div>
+                        </div>
+                        <span class="pill pill-green">PAGADO</span>
+                    </div>
+                    <div class="factura-body">
+                        <div class="factura-row">
+                            <span class="fr-label">Titular</span>
+                            <span class="fr-val" id="fe-titular"></span>
+                        </div>
+                        <div class="factura-row">
+                            <span class="fr-label">Número de contador</span>
+                            <span class="fr-val" id="fe-contador"></span>
+                        </div>
+                        <div class="factura-row">
+                            <span class="fr-label">Canal de pago</span>
+                            <span class="fr-val" id="fe-canal"></span>
+                        </div>
+                        <div class="factura-row">
+                            <span class="fr-label">Código de autorización</span>
+                            <span class="fr-val" id="fe-codigo" style="color:var(--green)"></span>
+                        </div>
+                        <div class="factura-row">
+                            <span class="fr-label">Fecha de pago</span>
+                            <span class="fr-val" id="fe-fecha"></span>
+                        </div>
+                    </div>
+                    <div style="background:var(--green-soft);border-radius:var(--radius-sm);margin:0 1.5rem 1.5rem;padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:.8rem;font-weight:600;color:var(--green);letter-spacing:.3px;">MONTO PAGADO</span>
+                        <span id="fe-monto" style="font-size:1.7rem;font-weight:700;color:var(--green);letter-spacing:-1px;font-family:'DM Mono',monospace;"></span>
+                    </div>
+                    <div class="factura-footer">Energía Eléctrica · luz.azurewebsites.net</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════ PAGOS ════ -->
+        <section id="pagos" class="section">
+            <div class="subtabs">
+                <button class="subtab active" onclick="showSub('pagos','ver',this)">Ver todos</button>
+                <button class="subtab" onclick="showSub('pagos','registrar',this)">+ Registrar</button>
+            </div>
+
+            <div id="pagos-ver" class="subview active">
+                <div class="action-row">
+                    <div class="sec-title">Pagos procesados</div>
+                    <button class="btn btn-ghost btn-sm" onclick="cargarPagos()">🔄 Actualizar</button>
+                </div>
+                <div id="pagos-alert" class="alert"></div>
+                <div id="pagos-loading" class="loading"><div class="spinner"></div>Cargando pagos…</div>
+                <div class="tbl-wrap">
+                    <table>
+                        <thead><tr><th>#</th><th>Responsable</th><th>Contador</th><th>Monto</th><th>Canal</th><th>Autorización</th><th>Fecha</th></tr></thead>
+                        <tbody id="pagos-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="pagos-registrar" class="subview">
+                <div style="display:flex;flex-direction:column;align-items:center;padding-top:.5rem">
+                    <div class="sec-title" style="text-align:center;margin-bottom:1.25rem">Registrar nuevo pago</div>
+                    <div id="reg-pago-alert" class="alert" style="width:100%;max-width:480px"></div>
+                    <div class="form-card" style="width:100%;max-width:480px">
+                        <div class="form-group">
+                            <label>NÚMERO DE CONTADOR</label>
+                            <input id="p-contador" type="text" placeholder="Ej: CTR-001" />
+                        </div>
+                        <div class="form-group">
+                            <label>MONTO (Q)</label>
+                            <input id="p-monto" type="number" step="0.01" min="0.01" placeholder="0.00" />
+                        </div>
+                        <div class="form-group">
+                            <label>CANAL DE PAGO</label>
+                            <select id="p-canal">
+                                <option value="">— Seleccionar canal —</option>
+                                <option value="OFICINA">🏢 Oficina</option>
+                                <option value="BANCA_EN_LINEA">🌐 Banca en línea</option>
+                                <option value="APP_MOVIL">📱 App móvil</option>
+                                <option value="AGENTE_AUTORIZADO">🤝 Agente autorizado</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-green" onclick="registrarPago()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>
+                            Procesar pago
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer><svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:4px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#aeaeb2" stroke="#aeaeb2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>Sistema de Gestión de Energía Eléctrica · API: luz.azurewebsites.net</footer>
+
+    <script>
+        const API = 'https://luz.azurewebsites.net';
+        let cacheTitulares = {};
+
+        function avatarClass(str) {
+            let h = 0;
+            for (let i = 0; i < str.length; i++) h = str.charCodeAt(i) + ((h << 5) - h);
+            return 'c' + Math.abs(h % 6);
+        }
+        function initials(name) {
+            return name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+        }
+        function showSection(id, btn) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+            if (id === 'titulares') cargarTitulares();
+            if (id === 'recibos') { cargarTitularesCache(); cargarRecibos(); }
+            if (id === 'pagos') { cargarTitularesCache(); cargarPagos(); }
+        }
+        function showSub(section, view, btn) {
+            document.querySelectorAll(`#${section} .subview`).forEach(v => v.classList.remove('active'));
+            document.querySelectorAll(`#${section} .subtab`).forEach(b => b.classList.remove('active'));
+            document.getElementById(`${section}-${view}`).classList.add('active');
+            btn.classList.add('active');
+        }
+        function showAlert(id, msg, type) {
+            const el = document.getElementById(id);
+            el.innerHTML = msg;
+            el.className = `alert alert-${type} show`;
+            if (type === 'success') setTimeout(() => el.classList.remove('show'), 4000);
+        }
+        function hideAlert(id) { document.getElementById(id).classList.remove('show'); }
+        function errMsg(status, data) {
+            if (data?.mensaje) return '⚠️ ' + data.mensaje;
+            if (status === 400) return '⚠️ Datos inválidos o contador no registrado.';
+            if (status === 404) return '🔍 No se encontró el recurso.';
+            if (status === 409) return '⚠️ El contador ya está registrado.';
+            if (status === 502) return '🏦 El banco rechazó la transacción.';
+            return `❌ Error del servidor (${status}).`;
+        }
+        function fmtFecha(iso) {
+            return new Date(iso).toLocaleDateString('es-GT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+        function fmtMoneda(n) {
+            return 'Q ' + parseFloat(n).toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        async function cargarTitularesCache() {
+            try {
+                const res = await fetch(`${API}/api/TitularServicio`);
+                if (!res.ok) return;
+                const data = await res.json();
+                cacheTitulares = {};
+                data.forEach(t => { cacheTitulares[t.numeroContador] = t.nombreResponsable; });
+            } catch (e) { }
+        }
+        function getNombre(contador) { return cacheTitulares[contador] || contador; }
+
+        // ── TITULARES ──
+        async function cargarTitulares() {
+            const loading = document.getElementById('titulares-loading');
+            const list = document.getElementById('titulares-list');
+            loading.classList.add('show'); list.innerHTML = ''; hideAlert('titulares-alert');
+            try {
+                const res = await fetch(`${API}/api/TitularServicio`);
+                const data = await res.json();
+                loading.classList.remove('show');
+                document.getElementById('stat-titulares').textContent = res.ok ? data.length : '—';
+                if (!res.ok) { showAlert('titulares-alert', errMsg(res.status, data), 'error'); return; }
+                cacheTitulares = {};
+                data.forEach(t => { cacheTitulares[t.numeroContador] = t.nombreResponsable; });
+                if (!data.length) { list.innerHTML = `<div class="empty"><div class="empty-icon">👤</div>No hay titulares registrados aún.</div>`; return; }
+                // Render cards primero, luego carga saldo de cada uno
+                data.forEach(t => {
+                    const av = avatarClass(t.nombreResponsable), in_ = initials(t.nombreResponsable);
+                    list.innerHTML += `<div class="titular-card"><div class="avatar ${av}">${in_}</div><div class="titular-info"><div class="titular-name">${t.nombreResponsable}</div><div class="titular-sub">📍 ${t.direccionInmueble}</div><div class="titular-saldo" id="saldo-card-${t.numeroContador}" style="margin-top:.35rem;font-size:.78rem;font-family:'DM Mono',monospace;color:var(--text4)">Consultando saldo…</div></div><span class="pill pill-blue">${t.numeroContador}</span></div>`;
+                });
+                // Cargar saldo individualmente por cada titular
+                data.forEach(async t => {
+                    const el = document.getElementById('saldo-card-' + t.numeroContador);
+                    if (!el) return;
+                    try {
+                        const rs = await fetch(`${API}/api/ReciboLuz/contador/${encodeURIComponent(t.numeroContador)}/saldo`);
+                        if (rs.status === 404 || rs.status === 204) {
+                            el.innerHTML = ``;
+                            return;
+                        }
+                        const sd = await rs.json();
+                        const monto = parseFloat(sd.saldoTotal) || 0;
+                        if (monto <= 0) {
+                            el.innerHTML = ``;
+                        } else {
+                            el.innerHTML = `<span style="color:var(--red)">⚠️ Saldo pendiente: <b>${fmtMoneda(monto)}</b> (${sd.cantidadRecibos || 0} recibo(s))</span>`;
+                        }
+                    } catch (e) {
+                        el.textContent = '';
+                    }
+                });
+            } catch (e) { loading.classList.remove('show'); showAlert('titulares-alert', '❌ No se pudo conectar con la API.', 'error'); }
+        }
+        async function registrarTitular() {
+            const contador = document.getElementById('t-contador').value.trim();
+            const nombre = document.getElementById('t-nombre').value.trim();
+            const direccion = document.getElementById('t-direccion').value.trim();
+            const saldoRaw = document.getElementById('t-saldo').value.trim();
+            const saldo = parseFloat(saldoRaw) || 0;
+            if (!contador || !nombre || !direccion) { showAlert('reg-titular-alert', '⚠️ Los campos de contador, nombre y dirección son obligatorios.', 'error'); return; }
+            try {
+                const res = await fetch(`${API}/api/TitularServicio`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ numeroContador: contador, nombreResponsable: nombre, direccionInmueble: direccion }) });
+                const data = await res.json();
+                if (!res.ok) { showAlert('reg-titular-alert', errMsg(res.status, data), 'error'); return; }
+                // Si hay saldo inicial, crear recibo
+                if (saldo > 0) {
+                    await fetch(`${API}/api/ReciboLuz`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ numeroContador: contador, saldoPendiente: saldo }) });
+                    showAlert('reg-titular-alert', `✅ <b>${data.nombreResponsable}</b> registrado con el contador <b>${data.numeroContador}</b>. Saldo inicial registrado: <b>Q ${saldo.toFixed(2)}</b>.`, 'success');
+                } else {
+                    showAlert('reg-titular-alert', `✅ <b>${data.nombreResponsable}</b> registrado con el contador <b>${data.numeroContador}</b>. Sin deuda inicial.`, 'success');
+                }
+                document.getElementById('t-contador').value = '';
+                document.getElementById('t-nombre').value = '';
+                document.getElementById('t-direccion').value = '';
+                document.getElementById('t-saldo').value = '';
+                cargarTitulares();
+            } catch (e) { showAlert('reg-titular-alert', '❌ No se pudo conectar con la API.', 'error'); }
+        }
+
+        // ── RECIBOS (tiempo real: cruza saldo actual del contador) ──
+        async function cargarRecibos() {
+            const loading = document.getElementById('recibos-loading');
+            const tbody = document.getElementById('recibos-tbody');
+            loading.classList.add('show'); tbody.innerHTML = ''; hideAlert('recibos-alert');
+            try {
+                const res = await fetch(`${API}/api/ReciboLuz`);
+                const data = await res.json();
+                loading.classList.remove('show');
+                document.getElementById('stat-recibos').textContent = res.ok ? data.length : '—';
+                if (!res.ok) { showAlert('recibos-alert', errMsg(res.status, data), 'error'); return; }
+                if (!data.length) { tbody.innerHTML = `<tr><td colspan="5"><div class="empty"><div class="empty-icon" style="display:flex;justify-content:center;margin-bottom:.75rem"><div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,rgba(0,122,255,.12),rgba(88,86,214,.12));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,122,255,.1)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="url(#eg1)" stroke="url(#eg1)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="eg1" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#007aff"/><stop offset="100%" stop-color="#5856d6"/></linearGradient></defs></svg></div></div><div style="font-size:1rem;font-weight:600;color:var(--text2);margin-bottom:.3rem">Todo al día</div><div style="font-size:.85rem;color:var(--text4)">No hay recibos con saldo pendiente</div></div></td></tr>`; return; }
+
+                // Obtener contadores únicos y consultar su saldo REAL en paralelo
+                const contadoresUnicos = [...new Set(data.map(r => r.numeroContador))];
+                const saldosReales = {};
+                await Promise.all(contadoresUnicos.map(async cnt => {
+                    try {
+                        const rs = await fetch(`${API}/api/ReciboLuz/contador/${encodeURIComponent(cnt)}/saldo`);
+                        if (rs.ok) {
+                            const sd = await rs.json();
+                            saldosReales[cnt] = parseFloat(sd.saldoTotal) || 0;
+                        } else {
+                            saldosReales[cnt] = 0; // 404 o error = solvente
+                        }
+                    } catch (e) { saldosReales[cnt] = 0; }
+                }));
+
+                // Mostrar solo recibos cuyo contador aún tiene deuda real
+                const pendientes = data.filter(r => (saldosReales[r.numeroContador] || 0) > 0);
+
+                if (!pendientes.length) {
+                    tbody.innerHTML = `<tr><td colspan="5"><div class="empty"><div class="empty-icon" style="display:flex;justify-content:center;margin-bottom:.75rem"><div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,rgba(0,122,255,.12),rgba(88,86,214,.12));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,122,255,.1)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="url(#eg2)" stroke="url(#eg2)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="eg2" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#007aff"/><stop offset="100%" stop-color="#5856d6"/></linearGradient></defs></svg></div></div><div style="font-size:1rem;font-weight:600;color:var(--text2);margin-bottom:.3rem">Todo al día</div><div style="font-size:.85rem;color:var(--text4)">No hay recibos con saldo pendiente</div></div></td></tr>`;
+                    return;
+                }
+                pendientes.forEach(r => {
+                    const nombre = getNombre(r.numeroContador), av = avatarClass(nombre), in_ = initials(nombre);
+                    tbody.innerHTML += `<tr><td style="color:var(--text3);font-family:'DM Mono',monospace;font-size:.8rem">#${r.idRecibo}</td><td><div style="display:flex;align-items:center;gap:.6rem"><div class="avatar ${av}" style="width:32px;height:32px;font-size:.75rem;flex-shrink:0">${in_}</div><span style="font-weight:500">${nombre}</span></div></td><td><span class="pill pill-blue">${r.numeroContador}</span></td><td class="monto-cell" style="color:var(--orange)">${fmtMoneda(saldosReales[r.numeroContador])}</td><td style="color:var(--text3);font-size:.82rem;font-family:'DM Mono',monospace">${fmtFecha(r.fechaEmision)}</td></tr>`;
+                });
+            } catch (e) { loading.classList.remove('show'); showAlert('recibos-alert', '❌ No se pudo conectar con la API.', 'error'); }
+        }
+
+        // ── CONSULTAR SALDO (FIXED) ──
+        async function consultarSaldo() {
+            const contador = document.getElementById('saldo-contador').value.trim();
+            if (!contador) { showAlert('saldo-alert', '⚠️ Ingrese el número de contador.', 'error'); return; }
+            document.getElementById('factura-saldo').classList.remove('show');
+            hideAlert('saldo-alert');
+            try {
+                // 1. Verificar si el titular existe
+                const resTitulares = await fetch(`${API}/api/TitularServicio`);
+                const titulares = await resTitulares.json();
+                const titular = titulares.find(t => t.numeroContador === contador);
+
+                if (!titular) {
+                    showAlert('saldo-alert', `🔍 El usuario con contador <b>${contador}</b> no existe en el sistema.`, 'error');
+                    return;
+                }
+
+                // 2. Consultar saldo pendiente
+                const resSaldo = await fetch(`${API}/api/ReciboLuz/contador/${encodeURIComponent(contador)}/saldo`);
+
+                let saldo = 0, cantidad = 0, nombreTitular = titular.nombreResponsable;
+
+                if (resSaldo.status === 404) {
+                    // Titular existe pero sin recibos pendientes → SOLVENTE
+                    saldo = 0; cantidad = 0;
+                } else {
+                    const data = await resSaldo.json();
+                    if (!resSaldo.ok) { showAlert('saldo-alert', errMsg(resSaldo.status, data), 'error'); return; }
+                    saldo = parseFloat(data.saldoTotal) || 0;
+                    cantidad = data.cantidadRecibos || 0;
+                    nombreTitular = data.nombreTitular || titular.nombreResponsable;
+                }
+
+                const alDia = saldo <= 0;
+
+                // Llenar factura
+                document.getElementById('fac-contador').textContent = contador;
+                document.getElementById('fac-nombre').textContent = nombreTitular;
+                document.getElementById('fac-num').textContent = contador;
+                document.getElementById('fac-cant').textContent = alDia ? '0 recibos' : `${cantidad} recibo(s)`;
+                document.getElementById('fac-fecha').textContent = new Date().toLocaleDateString('es-GT', { day: '2-digit', month: 'short', year: 'numeric' });
+                document.getElementById('fac-estado').textContent = alDia ? '✅ SOLVENTE' : '⚠️ INSOLVENTE';
+                document.getElementById('fac-estado').style.color = alDia ? 'var(--green)' : 'var(--red)';
+                document.getElementById('fac-total').textContent = fmtMoneda(saldo);
+                document.getElementById('fac-total-label').textContent = alDia ? 'SOLVENTE — SIN DEUDA' : 'SALDO PENDIENTE';
+
+                const totalBox = document.getElementById('fac-total-box');
+                totalBox.style.background = alDia ? 'var(--green-soft)' : 'var(--red-soft)';
+                totalBox.querySelector('.ft-label').style.color = alDia ? 'var(--green)' : 'var(--red)';
+                totalBox.querySelector('.ft-monto').style.color = alDia ? 'var(--green)' : 'var(--red)';
+
+                if (alDia) {
+                    showAlert('saldo-alert', `✅ El contador <b>${contador}</b> está <b>SOLVENTE</b>. Sin deuda pendiente.`, 'success');
+                } else {
+                    showAlert('saldo-alert', `⚠️ <b>${nombreTitular}</b> está <b>INSOLVENTE</b> — debe <b>${fmtMoneda(saldo)}</b> (${cantidad} recibo(s) pendiente(s)).`, 'error');
+                }
+
+                document.getElementById('factura-saldo').classList.add('show');
+            } catch (e) {
+                showAlert('saldo-alert', '❌ No se pudo conectar con la API.', 'error');
+            }
+        }
+
+        // ── VERIFICAR PAGO (NEW) ──
+        async function verificarPago() {
+            const contador = document.getElementById('r-contador').value.trim();
+            const codigo = document.getElementById('r-codigo').value.trim().toUpperCase();
+            if (!contador || !codigo) {
+                showAlert('reg-recibo-alert', '⚠️ Todos los campos son obligatorios.', 'error');
+                return;
+            }
+            document.getElementById('factura-emitida').classList.remove('show');
+            hideAlert('reg-recibo-alert');
+
+            try {
+                // Aseguramos tener el caché de titulares
+                await cargarTitularesCache();
+
+                // Traemos todos los pagos y buscamos por contador + código
+                const res = await fetch(`${API}/api/Pagos`);
+                const data = await res.json();
+
+                if (!res.ok) { showAlert('reg-recibo-alert', errMsg(res.status, data), 'error'); return; }
+
+                const pago = data.find(p =>
+                    p.numeroContador === contador &&
+                    (p.codigoAutorizacionBanco || '').toUpperCase() === codigo
+                );
+
+                if (!pago) {
+                    showAlert('reg-recibo-alert', '🔍 No se encontró ningún pago con ese contador y código de autorización.', 'error');
+                    return;
+                }
+
+                const canalLabel = {
+                    'OFICINA': '🏢 Oficina',
+                    'BANCA_EN_LINEA': '🌐 Banca en línea',
+                    'APP_MOVIL': '📱 App móvil',
+                    'AGENTE_AUTORIZADO': '🤝 Agente autorizado'
+                };
+
+                document.getElementById('fe-num').textContent = `Pago #${pago.idPago}`;
+                document.getElementById('fe-titular').textContent = getNombre(pago.numeroContador);
+                document.getElementById('fe-contador').textContent = pago.numeroContador;
+                document.getElementById('fe-canal').textContent = canalLabel[pago.canalPago] || pago.canalPago;
+                document.getElementById('fe-codigo').textContent = pago.codigoAutorizacionBanco;
+                document.getElementById('fe-fecha').textContent = fmtFecha(pago.fechaCobro);
+                document.getElementById('fe-monto').textContent = fmtMoneda(pago.monto);
+
+                document.getElementById('factura-emitida').classList.add('show');
+                showAlert('reg-recibo-alert', '✅ Pago verificado correctamente.', 'success');
+            } catch (e) {
+                showAlert('reg-recibo-alert', '❌ No se pudo conectar con la API.', 'error');
+            }
+        }
+
+        // ── PAGOS ──
+        async function cargarPagos() {
+            const loading = document.getElementById('pagos-loading');
+            const tbody = document.getElementById('pagos-tbody');
+            loading.classList.add('show'); tbody.innerHTML = ''; hideAlert('pagos-alert');
+            try {
+                const res = await fetch(`${API}/api/Pagos`);
+                const data = await res.json();
+                loading.classList.remove('show');
+                document.getElementById('stat-pagos').textContent = res.ok ? data.length : '—';
+                if (!res.ok) { showAlert('pagos-alert', errMsg(res.status, data), 'error'); return; }
+                if (!data.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="empty-icon">💳</div>Sin pagos procesados.</div></td></tr>`; return; }
+                const canalLabel = { 'OFICINA': '🏢 Oficina', 'BANCA_EN_LINEA': '🌐 Banca en línea', 'APP_MOVIL': '📱 App móvil', 'AGENTE_AUTORIZADO': '🤝 Agente' };
+                data.forEach(p => {
+                    const nombre = getNombre(p.numeroContador), av = avatarClass(nombre), in_ = initials(nombre);
+                    tbody.innerHTML += `<tr><td style="color:var(--text3);font-family:'DM Mono',monospace;font-size:.8rem">#${p.idPago}</td><td><div style="display:flex;align-items:center;gap:.6rem"><div class="avatar ${av}" style="width:32px;height:32px;font-size:.75rem;flex-shrink:0">${in_}</div><span style="font-weight:500">${nombre}</span></div></td><td><span class="pill pill-blue">${p.numeroContador}</span></td><td class="monto-cell" style="color:var(--green)">${fmtMoneda(p.monto)}</td><td style="font-size:.82rem">${canalLabel[p.canalPago] || p.canalPago}</td><td style="font-family:'DM Mono',monospace;font-size:.78rem;color:var(--green)">${p.codigoAutorizacionBanco || '—'}</td><td style="color:var(--text3);font-size:.78rem;font-family:'DM Mono',monospace">${fmtFecha(p.fechaCobro)}</td></tr>`;
+                });
+            } catch (e) { loading.classList.remove('show'); showAlert('pagos-alert', '❌ No se pudo conectar con la API.', 'error'); }
+        }
+        async function registrarPago() {
+            const contador = document.getElementById('p-contador').value.trim();
+            const monto = parseFloat(document.getElementById('p-monto').value);
+            const canal = document.getElementById('p-canal').value;
+            if (!contador || !monto || monto <= 0 || !canal) { showAlert('reg-pago-alert', '⚠️ Todos los campos son obligatorios.', 'error'); return; }
+            try {
+                const res = await fetch(`${API}/api/Pagos`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ numeroContador: contador, monto, canalPago: canal }) });
+                const data = await res.json();
+                if (!res.ok) { showAlert('reg-pago-alert', errMsg(res.status, data), 'error'); return; }
+                showAlert('reg-pago-alert', `✅ Pago <b>#${data.idPago}</b> procesado por <b>${fmtMoneda(data.monto)}</b>. Autorización: <b style="font-family:'DM Mono',monospace">${data.codigoAutorizacionBanco}</b>`, 'success');
+                document.getElementById('p-contador').value = '';
+                document.getElementById('p-monto').value = '';
+                document.getElementById('p-canal').value = '';
+                cargarPagos();
+            } catch (e) { showAlert('reg-pago-alert', '❌ No se pudo conectar con la API.', 'error'); }
+        }
+
+        // ── Live Preview ──
+        function livePreview() {
+            const contador = document.getElementById('t-contador').value.trim();
+            const nombre = document.getElementById('t-nombre').value.trim();
+            const direccion = document.getElementById('t-direccion').value.trim();
+            setHint('hint-contador', contador, contador.length >= 3 ? '✓ Formato válido' : contador ? 'Mínimo 3 caracteres' : '');
+            setHint('hint-nombre', nombre, nombre.length >= 3 ? '✓ Nombre válido' : nombre ? 'Ingrese el nombre completo' : '');
+            setHint('hint-direccion', direccion, direccion.length >= 5 ? '✓ Dirección válida' : direccion ? 'Ingrese la dirección completa' : '');
+            if (contador.length >= 3) activateStep(1);
+            if (nombre.length >= 3) activateStep(2);
+            if (direccion.length >= 5) activateStep(3);
+        }
+        function setHint(id, val, msg) { const el = document.getElementById(id); if (!val) { el.textContent = ''; el.className = 'field-hint'; return; } el.textContent = msg; el.className = 'field-hint ' + (msg.startsWith('✓') ? 'ok' : 'err'); }
+        function activateStep(n) { const el = document.getElementById('snum' + n); if (!el.classList.contains('done')) el.classList.add('active'); }
+
+        // ── Inicio ──
+        cargarTitularesCache();
+        cargarTitulares();
+        fetch(`${API}/api/ReciboLuz`).then(r => r.json()).then(d => { document.getElementById('stat-recibos').textContent = d.length || 0; }).catch(() => { });
+        fetch(`${API}/api/Pagos`).then(r => r.json()).then(d => { document.getElementById('stat-pagos').textContent = d.length || 0; }).catch(() => { });
+    </script>
+</body>
+</html>
