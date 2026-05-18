@@ -9,7 +9,9 @@ namespace ApiEnergia.DbContext
 
         public DbSet<PagosProcesados> PagosProcesados { get; set; }
         public DbSet<ReciboLuz> ReciboLuz { get; set; }
-        public DbSet<TitularServicio> TitularServicio { get; set; }
+        public DbSet<LecturaContador> LecturaContador { get; set; }
+        public DbSet<ClienteLuz> ClienteLuz { get; set; }
+        public DbSet<ContadorEnergia> ContadorEnergia { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,6 +53,9 @@ namespace ApiEnergia.DbContext
                 entity.Property(e => e.IdRecibo)
                       .HasColumnName("id_recibo")
                       .ValueGeneratedOnAdd();
+                entity.Property(e => e.LecturaContadorId)
+                      .HasColumnName("id_lectura")
+                      .IsRequired();
                 entity.Property(e => e.NumeroContador)
                       .HasColumnName("numero_contador")
                       .HasMaxLength(30)
@@ -62,28 +67,87 @@ namespace ApiEnergia.DbContext
                 entity.Property(e => e.FechaEmision)
                       .HasColumnName("fecha_emision")
                       .IsRequired();
+                entity.Property(e => e.Estado)
+                      .HasColumnName("estado")
+                      .HasConversion<string>()
+                      .IsRequired();
+                entity.HasOne(e => e.LecturaContador)
+                      .WithMany()
+                      .HasForeignKey(e => e.LecturaContadorId);
             });
 
-            // ── titular_servicio ──────────────────────────────────────────────
-            modelBuilder.Entity<TitularServicio>(entity =>
+            // ── lectura_contador ─────────────────────────────────────────────
+            modelBuilder.Entity<LecturaContador>(entity =>
             {
-                entity.ToTable("titular_servicio");
-                entity.HasKey(e => e.IdTitular);
-                entity.Property(e => e.IdTitular)
-                      .HasColumnName("id_titular")
+                entity.ToTable("lectura_contador");
+                entity.HasKey(e => e.IdLectura);
+                entity.Property(e => e.IdLectura)
+                      .HasColumnName("id_lectura")
                       .ValueGeneratedOnAdd();
                 entity.Property(e => e.NumeroContador)
                       .HasColumnName("numero_contador")
                       .HasMaxLength(30)
                       .IsRequired();
-                entity.Property(e => e.NombreResponsable)
-                      .HasColumnName("nombre_responsable")
+                entity.Property(e => e.KilovatiosConsumidos)
+                      .HasColumnName("kilovatios_consumidos")
+                      .IsRequired();
+                entity.Property(e => e.FechaLectura)
+                      .HasColumnName("fecha_lectura")
+                      .IsRequired();
+            });
+
+            // ── cliente_luz ───────────────────────────────────────────────────
+            modelBuilder.Entity<ClienteLuz>(entity =>
+            {
+                entity.ToTable("cliente_luz");
+                entity.HasKey(e => e.IdCliente);
+                entity.Property(e => e.IdCliente)
+                      .HasColumnName("id_cliente")
+                      .ValueGeneratedOnAdd();
+                entity.Property(e => e.Dpi)
+                      .HasColumnName("dpi")
+                      .HasMaxLength(20)
+                      .IsRequired();
+                entity.Property(e => e.Nombre)
+                      .HasColumnName("nombre")
+                      .HasMaxLength(100)
+                      .IsRequired();
+                entity.Property(e => e.Apellido)
+                      .HasColumnName("apellido")
+                      .HasMaxLength(100)
+                      .IsRequired();
+                entity.Property(e => e.Correo)
+                      .HasColumnName("correo")
                       .HasMaxLength(150)
+                      .IsRequired();
+            });
+
+            // ── contador_energia ─────────────────────────────────────────────
+            modelBuilder.Entity<ContadorEnergia>(entity =>
+            {
+                entity.ToTable("contador_energia");
+                entity.HasKey(e => e.NumeroContador);
+                entity.Property(e => e.NumeroContador)
+                      .HasColumnName("numero_contador")
+                      .HasMaxLength(30)
+                      .IsRequired();
+                entity.Property(e => e.IdCliente)
+                      .HasColumnName("id_cliente")
                       .IsRequired();
                 entity.Property(e => e.DireccionInmueble)
                       .HasColumnName("direccion_inmueble")
                       .HasMaxLength(255)
                       .IsRequired();
+                entity.Property(e => e.FechaInstalacion)
+                      .HasColumnName("fecha_instalacion")
+                      .IsRequired();
+                entity.Property(e => e.Estado)
+                      .HasColumnName("estado")
+                      .HasMaxLength(20)
+                      .IsRequired();
+                entity.HasOne(e => e.Cliente)
+                      .WithMany(c => c.Contadores)
+                      .HasForeignKey(e => e.IdCliente);
             });
         }
     }

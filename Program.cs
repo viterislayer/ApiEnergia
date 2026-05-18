@@ -1,4 +1,6 @@
 using ApiEnergia.DbContext;
+using ApiEnergia.Interfaces;
+using ApiEnergia.Repositories;
 using ApiEnergia.Services;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -26,7 +28,9 @@ builder.Services.AddDbContext<EnergiaDbContext>(options =>
 );
 
 // ── Servicios de negocio ──────────────────────────────────────────────────────
-builder.Services.AddScoped<BancoService>();
+builder.Services.AddScoped<IEnergiaService, EnergiaService>();
+builder.Services.AddScoped<IClientesService, ClientesService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // ── Controladores ─────────────────────────────────────────────────────────────
 builder.Services.AddControllers()
@@ -91,7 +95,7 @@ app.UseAuthorization();
 app.MapGet("/", () => Results.NotFound());
 
 // /scalar → sirve el index.html del sitio web
-app.MapGet("/scalar", async context =>
+app.MapGet("/", async context =>
 {
     context.Response.ContentType = "text/html";
     await context.Response.SendFileAsync("wwwroot/index.html");

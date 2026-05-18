@@ -1,27 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ApiEnergia.Models
+﻿namespace ApiEnergia.Models
 {
-    [Table("recibo_luz")]
     public class ReciboLuz
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id_recibo")]
         public int IdRecibo { get; set; }
 
-        [Required]
-        [MaxLength(30)]
-        [Column("numero_contador")]
+        public int LecturaContadorId { get; set; }
+
         public string NumeroContador { get; set; } = null!;
 
-        [Required]
-        [Column("saldo_pendiente", TypeName = "decimal(10,2)")]
         public decimal SaldoPendiente { get; set; }
 
-        [Required]
-        [Column("fecha_emision")]
         public DateTime FechaEmision { get; set; }
+
+        public ReciboEstado Estado { get; set; }
+
+        public LecturaContador? LecturaContador { get; set; }
+    }
+
+    public enum ReciboEstado
+    {
+        Pendiente,
+        Pagado
     }
 }
