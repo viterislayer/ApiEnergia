@@ -25,6 +25,9 @@ namespace ApiEnergia.DbContext
                 entity.Property(e => e.IdPago)
                       .HasColumnName("id_pago")
                       .ValueGeneratedOnAdd();
+                entity.Property(e => e.IdRecibo)
+                      .HasColumnName("id_recibo")
+                      .IsRequired();
                 entity.Property(e => e.NumeroContador)
                       .HasColumnName("numero_contador")
                       .HasMaxLength(30)
@@ -43,6 +46,9 @@ namespace ApiEnergia.DbContext
                 entity.Property(e => e.CodigoAutorizacionBanco)
                       .HasColumnName("codigo_autorizacion_banco")
                       .HasMaxLength(50);
+                entity.HasOne(e => e.Recibo)
+                      .WithMany(r => r.Pagos)
+                      .HasForeignKey(e => e.IdRecibo);
             });
 
             // ── recibo_luz ────────────────────────────────────────────────────
@@ -59,6 +65,10 @@ namespace ApiEnergia.DbContext
                 entity.Property(e => e.NumeroContador)
                       .HasColumnName("numero_contador")
                       .HasMaxLength(30)
+                      .IsRequired();
+                entity.Property(e => e.MontoTotal)
+                      .HasColumnName("monto_total")
+                      .HasColumnType("decimal(10,2)")
                       .IsRequired();
                 entity.Property(e => e.SaldoPendiente)
                       .HasColumnName("saldo_pendiente")
