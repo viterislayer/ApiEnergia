@@ -36,6 +36,7 @@ namespace ApiEnergia.Services
             var recibo = new ReciboLuz
             {
                 NumeroContador = numeroContador,
+                MontoTotal = monto,
                 SaldoPendiente = monto,
                 FechaEmision = DateTime.UtcNow,
                 Estado = ReciboEstado.Pendiente,
@@ -90,6 +91,8 @@ namespace ApiEnergia.Services
                 if (restante <= 0)
                     break;
 
+                var montoAplicado = Math.Min(restante, recibo.SaldoPendiente);
+
                 if (restante >= recibo.SaldoPendiente)
                 {
                     restante -= recibo.SaldoPendiente;
@@ -101,18 +104,19 @@ namespace ApiEnergia.Services
                     recibo.SaldoPendiente -= restante;
                     restante = 0;
                 }
-            }
-
-            if (canal is not null)
-            {
-                await _unitOfWork.Pagos.AddAsync(new PagosProcesados
+                
+                if (canal is not null && montoAplicado > 0)
                 {
-                    NumeroContador = numeroContador,
-                    Monto = monto,
-                    FechaCobro = DateTime.UtcNow,
-                    CanalPago = canal,
-                    CodigoAutorizacionBanco = null
-                });
+                    await _unitOfWork.Pagos.AddAsync(new PagosProcesados
+                    {
+                        IdRecibo = recibo.IdRecibo,
+                        NumeroContador = numeroContador,
+                        Monto = montoAplicado,
+                        FechaCobro = DateTime.UtcNow,
+                        CanalPago = canal,
+                        CodigoAutorizacionBanco = null
+                    });
+                }
             }
 
             await _unitOfWork.SaveChangesAsync();
