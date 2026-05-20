@@ -60,7 +60,7 @@ builder.Services.AddOpenApi(options =>
 // ── CORS ──────────────────────────────────────────────────────────────────────
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
@@ -87,7 +87,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     });
 }
 
-app.UseCors();
+app.UseCors("AllowAll");
 app.UseStaticFiles();
 app.UseAuthorization();
 
