@@ -30,6 +30,7 @@ namespace ApiEnergia.Services
                 };
 
                 await _unitOfWork.Clientes.AddAsync(cliente);
+                await _unitOfWork.SaveChangesAsync();
             }
 
             var numeroContador = GenerarNumeroContador();

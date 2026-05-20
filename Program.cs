@@ -74,7 +74,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        var secret = builder.Configuration["Jwt:Secret"] ?? "DEV_SECRET_KEY";
+        var secret = builder.Configuration["Jwt:Key"] ?? "DEV_SECRET_KEY";
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,

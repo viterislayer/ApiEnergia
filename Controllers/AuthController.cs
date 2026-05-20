@@ -38,7 +38,7 @@ namespace ApiEnergia.Controllers
 
         private string GenerarToken(string usuario, string rol)
         {
-            var secret = _configuration["Jwt:Secret"] ?? "DEV_SECRET_KEY";
+            var secret = _configuration["Jwt:Key"] ?? "DEV_SECRET_KEY";
             var issuer = _configuration["Jwt:Issuer"] ?? "ApiEnergia";
             var audience = _configuration["Jwt:Audience"] ?? "ApiEnergia";
 

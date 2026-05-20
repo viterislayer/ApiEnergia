@@ -13,10 +13,12 @@ namespace ApiEnergia.Controllers
     public class AgenciaLocalController : ControllerBase
     {
         private readonly IEnergiaService _energiaService;
+        private readonly IClientesService _clientesService;
 
-        public AgenciaLocalController(IEnergiaService energiaService)
+        public AgenciaLocalController(IEnergiaService energiaService, IClientesService clientesService)
         {
             _energiaService = energiaService;
+            _clientesService = clientesService;
         }
 
         [HttpPost("lectura")]
@@ -25,6 +27,14 @@ namespace ApiEnergia.Controllers
         {
             var recibo = await _energiaService.RegistrarLecturaAsync(dto.NumeroContador, dto.Kilovatios);
             return Ok(new ConsultarDeudaResponseDto(recibo.NumeroContador, recibo.SaldoPendiente));
+        }
+
+        [HttpPost("cliente")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> CrearCliente([FromBody] CrearClienteConContadorRequest request)
+        {
+            var respuesta = await _clientesService.CrearClienteConContadorAsync(request);
+            return Created(string.Empty, respuesta);
         }
 
         [HttpPost("pago-efectivo")]
