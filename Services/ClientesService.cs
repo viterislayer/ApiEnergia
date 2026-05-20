@@ -33,6 +33,7 @@ namespace ApiEnergia.Services
             }
 
             var numeroContador = GenerarNumeroContador();
+            var passwordTemporal = $"Temp{request.Dpi.Substring(0, 4)}!";
             var contador = new ContadorEnergia
             {
                 NumeroContador = numeroContador,
@@ -42,11 +43,19 @@ namespace ApiEnergia.Services
                 Cliente = cliente
             };
 
+            await _unitOfWork.Accesos.AddAsync(new UsuarioAccesoEnergia
+            {
+                IdCliente = cliente.IdCliente,
+                NombreUsuario = request.Dpi,
+                PasswordHash = passwordTemporal,
+                Rol = "CLIENTE"
+            });
+
             await _unitOfWork.Contadores.AddAsync(contador);
 
             await _unitOfWork.SaveChangesAsync();
 
-            return new CrearClienteConContadorResponse(numeroContador);
+            return new CrearClienteConContadorResponse(numeroContador, request.Dpi, passwordTemporal);
         }
 
         private static string GenerarNumeroContador()

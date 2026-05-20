@@ -9,6 +9,7 @@ namespace ApiEnergia.Interfaces
         IRepository<LecturaContador> Lecturas { get; }
         IRepository<ReciboLuz> Recibos { get; }
         IRepository<PagosProcesados> Pagos { get; }
+        IRepository<UsuarioAccesoEnergia> Accesos { get; }
         Task<int> SaveChangesAsync();
     }
 }

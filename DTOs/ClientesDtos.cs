@@ -9,5 +9,5 @@ namespace ApiEnergia.DTOs
         [property: Required, MaxLength(150), EmailAddress] string Correo,
         [property: Required, MaxLength(255)] string DireccionInmueble);
 
-    public record CrearClienteConContadorResponse(string NumeroContador);
+    public record CrearClienteConContadorResponse(string NumeroContador, string UsuarioAsignado, string PasswordTemporal);
 }

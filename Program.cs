@@ -2,8 +2,11 @@ using ApiEnergia.DbContext;
 using ApiEnergia.Interfaces;
 using ApiEnergia.Repositories;
 using ApiEnergia.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +71,24 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var secret = builder.Configuration["Jwt:Secret"] ?? "DEV_SECRET_KEY";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "ApiEnergia",
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "ApiEnergia",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // ── Pipeline HTTP ─────────────────────────────────────────────────────────────
@@ -89,17 +110,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 
 app.UseCors("AllowAll");
 app.UseStaticFiles();
+app.UseAuthentication();
 app.UseAuthorization();
-
-// / → nada
-app.MapGet("/", () => Results.NotFound());
-
-// /scalar → sirve el index.html del sitio web
-app.MapGet("/", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync("wwwroot/index.html");
-});
 
 app.MapControllers();
 

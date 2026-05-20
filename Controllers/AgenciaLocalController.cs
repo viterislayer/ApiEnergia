@@ -1,6 +1,7 @@
 using ApiEnergia.DTOs;
 using ApiEnergia.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiEnergia.Controllers
 {
@@ -8,6 +9,7 @@ namespace ApiEnergia.Controllers
     [Route("api/Energia/Agencia")]
     [Produces("application/json")]
     [Tags("Agencia Local")]
+    [Authorize]
     public class AgenciaLocalController : ControllerBase
     {
         private readonly IEnergiaService _energiaService;

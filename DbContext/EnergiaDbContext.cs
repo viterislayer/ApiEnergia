@@ -12,6 +12,7 @@ namespace ApiEnergia.DbContext
         public DbSet<LecturaContador> LecturaContador { get; set; }
         public DbSet<ClienteLuz> ClienteLuz { get; set; }
         public DbSet<ContadorEnergia> ContadorEnergia { get; set; }
+        public DbSet<UsuarioAccesoEnergia> Accesos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -158,6 +159,30 @@ namespace ApiEnergia.DbContext
                 entity.HasOne(e => e.Cliente)
                       .WithMany(c => c.Contadores)
                       .HasForeignKey(e => e.IdCliente);
+            });
+
+            modelBuilder.Entity<UsuarioAccesoEnergia>(entity =>
+            {
+                entity.ToTable("usuario_acceso_energia");
+                entity.HasKey(e => e.IdUsuario);
+                entity.Property(e => e.IdUsuario)
+                      .HasColumnName("id_usuario")
+                      .ValueGeneratedOnAdd();
+                entity.Property(e => e.IdCliente)
+                      .HasColumnName("id_cliente")
+                      .IsRequired();
+                entity.Property(e => e.NombreUsuario)
+                      .HasColumnName("nombre_usuario")
+                      .HasMaxLength(50)
+                      .IsRequired();
+                entity.Property(e => e.PasswordHash)
+                      .HasColumnName("password_hash")
+                      .HasMaxLength(255)
+                      .IsRequired();
+                entity.Property(e => e.Rol)
+                      .HasColumnName("rol")
+                      .HasMaxLength(30)
+                      .IsRequired();
             });
         }
     }

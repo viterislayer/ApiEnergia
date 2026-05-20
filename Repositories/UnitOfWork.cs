@@ -16,6 +16,7 @@ namespace ApiEnergia.Repositories
             Lecturas = new Repository<LecturaContador>(_db);
             Recibos = new Repository<ReciboLuz>(_db);
             Pagos = new Repository<PagosProcesados>(_db);
+            Accesos = new Repository<UsuarioAccesoEnergia>(_db);
         }
 
         public IRepository<ClienteLuz> Clientes { get; }
@@ -23,6 +24,7 @@ namespace ApiEnergia.Repositories
         public IRepository<LecturaContador> Lecturas { get; }
         public IRepository<ReciboLuz> Recibos { get; }
         public IRepository<PagosProcesados> Pagos { get; }
+        public IRepository<UsuarioAccesoEnergia> Accesos { get; }
 
         public Task<int> SaveChangesAsync()
         {
